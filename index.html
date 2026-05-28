@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Jawan Bhavan Rental Collection Statement.</title>
+
+<!-- JQUERY -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- XLSX -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- JSPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- AUTOTABLE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#eef2f7;
+    padding:25px;
+}
+
+.main-container{
+    max-width:1800px;
+    margin:auto;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.header{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.15);
+}
+
+.header h2{
+    text-align:center;
+    font-size:34px;
+}
+
+/* =========================
+TOP CONTROLS
+========================= */
+
+.top-box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+input[type=file],
+input[type=text],
+select{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #cbd5e1;
+    font-size:14px;
+    min-width:220px;
+}
+
+button{
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+.filter-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.show-btn{
+    background:#16a34a;
+    color:white;
+}
+
+.pdf-btn{
+    background:#dc2626;
+    color:white;
+}
+
+/* =========================
+ACCOUNT HEADER
+========================= */
+
+.account-box{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.account-header{
+    background:#0f172a;
+    color:white;
+    padding:25px;
+}
+
+.account-header h3{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.account-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:10px;
+    font-size:14px;
+}
+
+.account-grid p{
+    margin:5px 0;
+}
+
+/* =========================
+TABLE
+========================= */
+
+.table-container{
+    overflow:auto;
+}
+
+.bank-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1700px;
+}
+
+.bank-table thead{
+    background:#1e293b;
+    color:white;
+}
+
+.bank-table th{
+    padding:15px;
+    border:1px solid #334155;
+    text-align:center;
+    font-size:14px;
+    cursor:pointer;
+    user-select:none;
+}
+
+.bank-table td{
+    padding:14px;
+    border:1px solid #e2e8f0;
+    text-align:center;
+    font-size:14px;
+}
+
+.bank-table tbody tr:nth-child(even){
+    background:#f8fafc;
+}
+
+.bank-table tbody tr:hover{
+    background:#eff6ff;
+}
+
+/* =========================
+BADGES
+========================= */
+
+.advance-badge{
+    background:#dcfce7;
+    color:#166534;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.balance-badge{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+/* =========================
+AMOUNT
+========================= */
+
+.credit{
+    color:#16a34a;
+    font-weight:700;
+}
+
+.balance-box{
+    background:#dbeafe;
+    color:#1d4ed8;
+    padding:5px 12px;
+    border-radius:20px;
+    font-weight:700;
+}
+
+/* =========================
+TOTAL
+========================= */
+
+.total-row{
+    background:#0f172a !important;
+    color:white;
+    font-size:16px;
+    font-weight:700;
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    body{
+        padding:10px;
+    }
+
+    .top-box{
+        flex-direction:column;
+    }
+
+    button,
+    input,
+    select{
+        width:100%;
+    }
+
+    .header h2{
+        font-size:24px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h2 id="statementTitle">
+            Jawan Bhavan Rental Collection Statement.
+        </h2>
+
+    </div>
+
+    <!-- CONTROLS -->
+
+    <div class="top-box">
+
+        <input type="file" id="excelFile" accept=".xlsx,.xls">
+
+        <!-- SEARCH -->
+
+        <input
+        type="text"
+        id="searchInput"
+        placeholder="Search All Fields..."
+        onkeyup="searchTable()"
+        >
+
+        <!-- MONTH -->
+
+        <select id="monthFilter">
+
+            <option value="">Select Month</option>
+
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+
+        </select>
+
+        <!-- YEAR -->
+
+        <select id="yearFilter">
+
+            <option value="">Select Year</option>
+
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+
+        </select>
+
+        <button class="filter-btn" onclick="filterMonth()">
+            Filter Report
+        </button>
+
+        <button class="show-btn" onclick="showAll()">
+            Show All
+        </button>
+
+        <button class="pdf-btn" onclick="exportPDF()">
+            Export PDF
+        </button>
+
+    </div>
+
+    <!-- ACCOUNT -->
+
+    <div class="account-box">
+
+        <div class="account-header">
+
+            <h3>Account Statement</h3>
+
+            <div class="account-grid">
+
+                <div>
+                    <p><b>Account Name :</b> Jawan Bhavan</p>
+                    <p><b>Account Type :</b> Current Account</p>
+                </div>
+
+                <div>
+                    <p><b>Branch :</b> Chennai Main Branch</p>
+                    <p><b>IFSC :</b> JAWAN0001</p>
+                </div>
+
+                <div>
+                    <p><b>Status :</b> Active</p>
+                    <p><b>Statement :</b> Digital Payment Report</p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <div class="table-container">
+
+            <table class="bank-table" id="paymentTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th onclick="tableSort('slno')">Sl.No ↕</th>
+                        <th onclick="tableSort('date')">Date ↕</th>
+                        <th onclick="tableSort('application_no')">Application No ↕</th>
+                        <th onclick="tableSort('name')">Guest Name ↕</th>
+                        <th onclick="tableSort('type')">Transaction Type ↕</th>
+                        <th onclick="tableSort('txn')">Transaction ID ↕</th>
+                        <th onclick="tableSort('credit')">Credit ↕</th>
+                        <th onclick="tableSort('balance')">Running Balance ↕</th>
+                        <th onclick="tableSort('remarks')">Remarks ↕</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+GLOBAL DATA
+========================= */
+
+let originalData = [];
+let currentDisplayData = [];
+
+let currentSortField = "";
+let currentSortOrder = "asc";
+
+/* =========================
+READ EXCEL
+========================= */
+
+document.getElementById('excelFile')
+.addEventListener('change', function(e){
+
+    let file = e.target.files[0];
+
+    let reader = new FileReader();
+
+    reader.onload = function(event){
+
+        let data = new Uint8Array(event.target.result);
+
+        let workbook = XLSX.read(data,{type:'array'});
+
+        let sheetName = workbook.SheetNames[0];
+
+        let worksheet = workbook.Sheets[sheetName];
+
+        let jsonData =
+            XLSX.utils.sheet_to_json(worksheet);
+
+        originalData = jsonData;
+
+        sortDataByDate(originalData);
+
+        displayTable(originalData);
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+});
+
+/* =========================
+DISPLAY TABLE
+========================= */
+
+function displayTable(data){
+
+    currentDisplayData = [...data];
+
+    let tbody =
+        document.getElementById('tableBody');
+
+    tbody.innerHTML = "";
+
+    let runningBalance = 0;
+
+    let slno = 1;
+
+    data.forEach((row)=>{
+
+        let applicationNo =
+            row.application ||
+            row.Application ||
+            row["application_no"] ||
+            "-";
+
+        let guestName =
+            row.name ||
+            row.Name ||
+            "-";
+
+        let advanceAmount = Number(
+            row["Advance Paid"] ||
+            row["advance_paid"] ||
+            0
+        );
+
+        let advanceTxn =
+            row["Advance Txn"] ||
+            row["advance_txn"] ||
+            "-";
+
+        let advanceDate =
+            row["advance_date"] ||
+            row["Advance Date"] ||
+            "";
+
+        let balanceAmount = Number(
+            row["Balance Paid"] ||
+            row["balance_paid"] ||
+            0
+        );
+
+        let balanceTxn =
+            row["Balance Txn"] ||
+            row["balance_txn"] ||
+            "-";
+
+        let balanceDate =
+            row["balance_date"] ||
+            row["Balance Date"] ||
+            "";
+
+        /* ADVANCE ENTRY */
+
+        if(advanceAmount > 0){
+
+            runningBalance += advanceAmount;
+
+            tbody.innerHTML += `
+
+            <tr>
+
+                <td>${slno++}</td>
+
+                <td>${formatDate(advanceDate)}</td>
+
+                <td><b>${applicationNo}</b></td>
+
+                <td>${guestName}</td>
+
+                <td>
+                    <span class="advance-badge">
+                        ADVANCE CREDIT
+                    </span>
+                </td>
+
+                <td>${advanceTxn}</td>
+
+                <td class="credit">
+                    ${advanceAmount.toFixed(2)}
+                </td>
+
+                <td>
+                    <span class="balance-box">
+                        ${runningBalance.toFixed(2)}
+                    </span>
+                </td>
+
+                <td>
+                    Advance Payment Received
+                </td>
+
+            </tr>
+
+            `;
+
+        }
+
+        /* BALANCE ENTRY */
+
+        if(balanceAmount > 0){
+
+            runningBalance += balanceAmount;
+
+            tbody.innerHTML += `
+
+            <tr>
+
+                <td>${slno++}</td>
+
+                <td>${formatDate(balanceDate)}</td>
+
+                <td><b>${applicationNo}</b></td>
+
+                <td>${guestName}</td>
+
+                <td>
+                    <span class="balance-badge">
+                        BALANCE CREDIT
+                    </span>
+                </td>
+
+                <td>${balanceTxn}</td>
+
+                <td class="credit">
+                    ${balanceAmount.toFixed(2)}
+                </td>
+
+                <td>
+                    <span class="balance-box">
+                        ${runningBalance.toFixed(2)}
+                    </span>
+                </td>
+
+                <td>
+                    Final Balance Payment
+                </td>
+
+            </tr>
+
+            `;
+
+        }
+
+    });
+
+    /* FINAL BALANCE */
+
+    tbody.innerHTML += `
+
+    <tr class="total-row">
+
+        <td colspan="7">
+            FINAL ACCOUNT BALANCE
+        </td>
+
+        <td colspan="2">
+            ${runningBalance.toFixed(2)}
+        </td>
+
+    </tr>
+
+    `;
+
+}
+
+/* =========================
+SEARCH
+========================= */
+
+function searchTable(){
+
+    let keyword =
+        document.getElementById('searchInput')
+        .value
+        .toLowerCase();
+
+    let filtered = originalData.filter((row)=>{
+
+        return JSON.stringify(row)
+        .toLowerCase()
+        .includes(keyword);
+
+    });
+
+    displayTable(filtered);
+
+}
+
+/* =========================
+FILTER MONTH + YEAR
+FIXED
+========================= */
+
+function filterMonth(){
+
+    let selectedMonth =
+        document.getElementById('monthFilter').value;
+
+    let selectedYear =
+        document.getElementById('yearFilter').value;
+
+    if(selectedMonth === "" && selectedYear === ""){
+
+        alert("Please Select Month or Year");
+        return;
+
+    }
+
+    let filteredData = [];
+
+    originalData.forEach((row)=>{
+
+        let tempRow = {...row};
+
+        let advanceDate =
+            row["advance_date"] ||
+            row["Advance Date"] ||
+            "";
+
+        let balanceDate =
+            row["balance_date"] ||
+            row["Balance Date"] ||
+            "";
+
+        let advanceMatch = false;
+        let balanceMatch = false;
+
+        /* ADVANCE CHECK */
+
+        if(advanceDate){
+
+            let adate = parseCustomDate(advanceDate);
+
+            let advMonth =
+                String(adate.getMonth()+1)
+                .padStart(2,'0');
+
+            let advYear =
+                String(adate.getFullYear());
+
+            if(
+                (selectedMonth === "" || advMonth === selectedMonth)
+                &&
+                (selectedYear === "" || advYear === selectedYear)
+            ){
+
+                advanceMatch = true;
+
+            }
+
+        }
+
+        /* BALANCE CHECK */
+
+        if(balanceDate){
+
+            let bdate = parseCustomDate(balanceDate);
+
+            let balMonth =
+                String(bdate.getMonth()+1)
+                .padStart(2,'0');
+
+            let balYear =
+                String(bdate.getFullYear());
+
+            if(
+                (selectedMonth === "" || balMonth === selectedMonth)
+                &&
+                (selectedYear === "" || balYear === selectedYear)
+            ){
+
+                balanceMatch = true;
+
+            }
+
+        }
+
+        /* REMOVE NON MATCH ADVANCE */
+
+        if(!advanceMatch){
+
+            tempRow["Advance Paid"] = 0;
+            tempRow["advance_paid"] = 0;
+
+        }
+
+        /* REMOVE NON MATCH BALANCE */
+
+        if(!balanceMatch){
+
+            tempRow["Balance Paid"] = 0;
+            tempRow["balance_paid"] = 0;
+
+        }
+
+        let adv = Number(
+            tempRow["Advance Paid"] ||
+            tempRow["advance_paid"] ||
+            0
+        );
+
+        let bal = Number(
+            tempRow["Balance Paid"] ||
+            tempRow["balance_paid"] ||
+            0
+        );
+
+        if(adv > 0 || bal > 0){
+
+            filteredData.push(tempRow);
+
+        }
+
+    });
+
+    sortDataByDate(filteredData);
+
+    displayTable(filteredData);
+
+}
+
+/* =========================
+AUTO TABLE SORT
+========================= */
+
+function tableSort(field){
+
+    if(currentSortField === field){
+
+        currentSortOrder =
+            currentSortOrder === "asc"
+            ? "desc"
+            : "asc";
+
+    }else{
+
+        currentSortField = field;
+        currentSortOrder = "asc";
+
+    }
+
+    let sortedData = [...currentDisplayData];
+
+    sortedData.sort((a,b)=>{
+
+        let valueA = "";
+        let valueB = "";
+
+        if(field === "date"){
+
+            valueA = parseCustomDate(
+
+                a["advance_date"] ||
+                a["Advance Date"] ||
+                a["balance_date"] ||
+                a["Balance Date"]
+
+            );
+
+            valueB = parseCustomDate(
+
+                b["advance_date"] ||
+                b["Advance Date"] ||
+                b["balance_date"] ||
+                b["Balance Date"]
+
+            );
+
+        }
+
+        else if(field === "application"){
+
+            valueA =
+                a.application ||
+                a.Application ||
+                a["Application No"] ||
+                "";
+
+            valueB =
+                b.application ||
+                b.Application ||
+                b["Application No"] ||
+                "";
+
+        }
+
+        else if(field === "name"){
+
+            valueA =
+                a.name ||
+                a.Name ||
+                "";
+
+            valueB =
+                b.name ||
+                b.Name ||
+                "";
+
+        }
+
+        else if(field === "txn"){
+
+            valueA =
+                a["Advance Txn"] ||
+                a["advance_txn"] ||
+                a["Balance Txn"] ||
+                a["balance_txn"] ||
+                "";
+
+            valueB =
+                b["Advance Txn"] ||
+                b["advance_txn"] ||
+                b["Balance Txn"] ||
+                b["balance_txn"] ||
+                "";
+
+        }
+
+        else if(field === "credit"){
+
+            valueA = Number(
+
+                a["Advance Paid"] ||
+                a["advance_paid"] ||
+                a["Balance Paid"] ||
+                a["balance_paid"] ||
+                0
+
+            );
+
+            valueB = Number(
+
+                b["Advance Paid"] ||
+                b["advance_paid"] ||
+                b["Balance Paid"] ||
+                b["balance_paid"] ||
+                0
+
+            );
+
+        }
+
+        else{
+
+            valueA = JSON.stringify(a);
+            valueB = JSON.stringify(b);
+
+        }
+
+        if(typeof valueA === "string"){
+
+            if(currentSortOrder === "asc"){
+
+                return valueA.localeCompare(valueB);
+
+            }else{
+
+                return valueB.localeCompare(valueA);
+
+            }
+
+        }else{
+
+            if(currentSortOrder === "asc"){
+
+                return valueA - valueB;
+
+            }else{
+
+                return valueB - valueA;
+
+            }
+
+        }
+
+    });
+
+    displayTable(sortedData);
+
+}
+
+/* =========================
+SHOW ALL
+========================= */
+
+function showAll(){
+
+    document.getElementById("searchInput").value = "";
+
+    document.getElementById("monthFilter").value = "";
+
+    document.getElementById("yearFilter").value = "";
+
+    sortDataByDate(originalData);
+
+    displayTable(originalData);
+
+}
+
+/* =========================
+PARSE DATE
+========================= */
+
+function parseCustomDate(dateString){
+
+    if(!dateString)
+        return new Date();
+
+    if(typeof dateString === 'number'){
+
+        let excelDate =
+            XLSX.SSF.parse_date_code(dateString);
+
+        return new Date(
+            excelDate.y,
+            excelDate.m - 1,
+            excelDate.d
+        );
+
+    }
+
+    if(dateString.includes('/')){
+
+        let parts = dateString.split('/');
+
+        return new Date(
+            parts[2],
+            parts[1]-1,
+            parts[0]
+        );
+
+    }
+
+    return new Date(dateString);
+
+}
+
+/* =========================
+FORMAT DATE
+========================= */
+
+function formatDate(dateString){
+
+    if(!dateString) return "";
+
+    let date = parseCustomDate(dateString);
+
+    let day =
+        String(date.getDate()).padStart(2,'0');
+
+    let month =
+        String(date.getMonth()+1).padStart(2,'0');
+
+    let year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+
+}
+
+/* =========================
+SORT DATE
+========================= */
+
+function sortDataByDate(data){
+
+    data.sort((a,b)=>{
+
+        let dateA = parseCustomDate(
+
+            a["advance_date"] ||
+            a["Advance Date"] ||
+            a["balance_date"] ||
+            a["Balance Date"]
+
+        );
+
+        let dateB = parseCustomDate(
+
+            b["advance_date"] ||
+            b["Advance Date"] ||
+            b["balance_date"] ||
+            b["Balance Date"]
+
+        );
+
+        return dateA - dateB;
+
+    });
+
+}
+
+/* =========================
+EXPORT PDF
+========================= */
+
+function exportPDF(){
+
+    const { jsPDF } = window.jspdf;
+
+    let doc = new jsPDF('l','mm','a4');
+
+    doc.setFontSize(20);
+
+    doc.text(
+        "Jawan Bhavan Rental Collection Statement.",
+        14,
+        15
+    );
+
+    doc.autoTable({
+
+        html:'#paymentTable',
+
+        startY:30,
+
+        theme:'grid',
+
+        styles:{
+            fontSize:8,
+            cellPadding:3,
+            halign:'center'
+        },
+
+        headStyles:{
+            fillColor:[15,23,42],
+            textColor:[255,255,255]
+        }
+
+    });
+
+    doc.save("Bank_Statement_Report.pdf");
+
+}
+
+</script>
+
+</body>
+
+</html>
